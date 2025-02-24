@@ -1,7 +1,9 @@
+// app/(dashboard)/dashboard/workflow/page.tsx
 "use client";
 import { useState } from 'react';
 import StoryDisplay from '@/components/ai-tutor-api/StoryDisplay';
 import Link from 'next/link';
+import { WorkflowHistoryDrawer } from '@/components/workflow/WorkflowHistoryDrawer';
 
 export default function Workflow() {
     const [story, setStory] = useState('');
@@ -43,6 +45,18 @@ export default function Workflow() {
         }
     };
 
+    const handleSelectHistory = (input: string, output: string) => {
+        setStory(input);
+        try {
+            // Assuming output is a JSON string or already a JSON object
+            const outputData = typeof output === 'string' ? JSON.parse(output) : output;
+            setResult(outputData);
+        } catch (err) {
+            // If parsing fails, just set the raw output
+            setResult({ result: output });
+        }
+    };
+
     return (
         <div className="min-h-screen p-8">
             <div className="max-w-3xl mx-auto">
@@ -56,9 +70,12 @@ export default function Workflow() {
                 <div className="glass-morphism p-8 mb-8 rounded-xl shadow-xl backdrop-blur-lg bg-white/30">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <label htmlFor="story" className="block text-lg font-medium text-gray-700">
-                                Enter your story prompt:
-                            </label>
+                            <div className="flex justify-between items-center">
+                                <label htmlFor="story" className="block text-lg font-medium text-gray-700">
+                                    Enter your story prompt:
+                                </label>
+                                <WorkflowHistoryDrawer onSelectHistory={handleSelectHistory} />
+                            </div>
                             <input
                                 id="story"
                                 type="text"

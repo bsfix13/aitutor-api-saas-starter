@@ -139,6 +139,30 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     }),
 }));
 
+export const workflowHistory = pgTable('workflow_history', {
+  id: serial('id').primaryKey(),
+  teamId: integer('team_id').notNull().references(() => teams.id),
+  userId: integer('user_id').notNull().references(() => users.id),
+  input: text('input').notNull(),
+  output: text('output').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const workflowHistoryRelations = relations(workflowHistory, ({ one }) => ({
+  team: one(teams, {
+    fields: [workflowHistory.teamId],
+    references: [teams.id],
+  }),
+  user: one(users, {
+    fields: [workflowHistory.userId],
+    references: [users.id],
+  }),
+}));
+
+// Add these types
+export type WorkflowHistory = typeof workflowHistory.$inferSelect;
+export type NewWorkflowHistory = typeof workflowHistory.$inferInsert;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Team = typeof teams.$inferSelect;

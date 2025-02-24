@@ -105,12 +105,54 @@ The available tiers are defined in **lib/tiers.ts**:
 
 ## Workflow and Chatbot Integration
 
-- **Workflow Page:**  
-  When a workflow is executed, the backend checks the message limit. If the limit is reached (e.g. for free users, 5 messages per month), the workflow is blocked and an error is returned.
-  
-- **Chatbot Page:**  
-  Build and test chatbots created with AI Tutor API as part of your SaaS application.
+### Workflow Page
+The workflow page provides an interface for users to interact with AI Tutor API workflows:
 
+- **Input Submission**: Users can enter prompts (e.g., "Tell me a story about a magical forest") and generate AI-powered responses.
+  
+- **Message Limit Enforcement**: When a workflow is executed, the backend checks the team's message limit. If the limit is reached (e.g., for free users, 5 messages per month), the workflow is blocked and an error is returned.
+
+- **Workflow History**: 
+  - All workflow interactions are automatically saved to the database
+  - Users can access their workflow history by clicking the history icon in the input field
+  - The history drawer displays past prompts and their results, sorted by most recent
+  - Clicking on any history item will restore both the input prompt and the generated output
+  - History is shared among team members, allowing for collaborative work
+  
+### Chatbot Page
+Build and test chatbots created with AI Tutor API as part of your SaaS application:
+
+- **Embedded Chatbots**: Easily embed chatbots created with AI Tutor API
+- **Real-time Streaming**: Experience real-time text streaming for a more interactive chat experience
+- **Customizable Interface**: The chat interface can be styled to match your application's design
+
+### Extending Chat History to the Chatbot Page
+
+The chatbot page can be enhanced with a message history feature similar to the workflow history:
+
+#### Implementation Guide
+
+1. **Database Schema**: 
+   - The existing `workflow_history` table can be used as a model
+   - Create a `chat_history` table with fields for:
+     - `id`: Unique identifier
+     - `teamId`: Team association
+     - `userId`: User who initiated the chat
+     - `messages`: JSON array of chat messages (or individual message rows)
+     - `createdAt`: Timestamp
+     - `title`: Optional auto-generated title based on conversation content
+
+2. **API Endpoints**:
+   - Create `/api/chat/history` endpoint to fetch chat history
+   - Modify the existing `/api/chat` endpoint to save conversations
+   - Add an endpoint to allow users to name or categorize conversations
+
+3. **UI Components**:
+   - Add a history drawer component similar to `WorkflowHistoryDrawer`
+   - Implement a chat session selector to switch between conversations
+   - Add options to continue previous conversations or start new ones
+
+   
 ## Sidebar Subscription Status Display
 
 The sidebar features a dedicated component that displays:

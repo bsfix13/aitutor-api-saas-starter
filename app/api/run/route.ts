@@ -1,7 +1,9 @@
 // app/api/run/route.ts
+// Modify your existing run/route.ts file
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser, getTeamForUser } from '@/lib/db/queries';
-import { checkMessageLimit, incrementMessageCount } from '@/lib/db/utils';
+import { checkMessageLimit, incrementMessageCount, saveWorkflowHistory } from '@/lib/db/utils';
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check the team’s monthly message limit.
+    // Check the team's monthly message limit.
     const { withinLimit, remainingMessages } = await checkMessageLimit(team.id);
     if (!withinLimit) {
       return NextResponse.json(
@@ -76,6 +78,14 @@ export async function POST(req: NextRequest) {
         { status: response.status }
       );
     }
+
+    // Save workflow history
+    await saveWorkflowHistory(
+      team.id, 
+      user.id, 
+      story, 
+      data.result || JSON.stringify(data)
+    );
 
     return NextResponse.json(data, { status: 200 });
   } catch (error: any) {

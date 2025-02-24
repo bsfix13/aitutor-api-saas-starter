@@ -1,8 +1,9 @@
 // lib/db/utils.ts
 import { db } from './drizzle';
 import { teams, Team } from './schema';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, desc } from 'drizzle-orm';
 import { tiers, Tier } from '../tiers';
+import { workflowHistory, NewWorkflowHistory } from './schema';
 
 // This function checks the monthly message limit for a team.
 // If the team has an active subscription (stripeSubscriptionId exists) and its stripeProductId
@@ -51,4 +52,39 @@ export async function incrementMessageCount(teamId: number, count: number = 1): 
       updatedAt: new Date()
     })
     .where(eq(teams.id, teamId));
+}
+
+export async function saveWorkflowHistory(
+  teamId: number,
+  userId: number,
+  input: string,
+  output: string
+): Promise<void> {
+  const newHistory: NewWorkflowHistory = {
+    teamId,
+    userId,
+    input,
+    output,
+    createdAt: new Date(),
+  };
+  
+  await db.insert(workflowHistory).values(newHistory);
+}
+
+// Function to get workflow history for a team
+export async function getWorkflowHistory(
+  teamId: number,
+  limit: number = 10
+) {
+  return db.select({
+    id: workflowHistory.id,
+    input: workflowHistory.input,
+    output: workflowHistory.output,
+    createdAt: workflowHistory.createdAt,
+    userId: workflowHistory.userId,
+  })
+  .from(workflowHistory)
+  .where(eq(workflowHistory.teamId, teamId))
+  .orderBy(desc(workflowHistory.createdAt))
+  .limit(limit);
 }
