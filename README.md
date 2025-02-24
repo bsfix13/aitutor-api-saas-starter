@@ -1,5 +1,7 @@
 # AI Tutor API Subscription Starter
 
+![AI Tutor API Logo](https://raw.githubusercontent.com/Tech-in-Schools-Initiative/aitutor-api-saas-starter/main/public/logo-long.png)
+
 Use workflows and chatbots created with [AI Tutor API](https://aitutor-api.vercel.app/).  
 This template is based on [Vercel SAAS Starter](https://github.com/nextjs/saas-starter).
 
@@ -152,7 +154,7 @@ The chatbot page can be enhanced with a message history feature similar to the w
    - Implement a chat session selector to switch between conversations
    - Add options to continue previous conversations or start new ones
 
-   
+
 ## Sidebar Subscription Status Display
 
 The sidebar features a dedicated component that displays:
