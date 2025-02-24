@@ -78,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="mt-2">
           <SubscriptionStatus />
         </div>
-        <SidebarFooter className="mt-auto px-4">
+        <SidebarFooter className="mt-auto">
           <NavUser />
         </SidebarFooter>
       </SidebarContent>
