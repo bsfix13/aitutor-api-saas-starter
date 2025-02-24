@@ -9,6 +9,7 @@ export interface Tier {
     features: string[];
     messageLimit: number;
     productId: string; // Stripe Price ID
+    priceId?:string;
 }
   
 export const tiers: Tier[] = [
@@ -24,6 +25,7 @@ export const tiers: Tier[] = [
       ],
       messageLimit: 5,
       productId: '', // No Price ID for the free tier
+      priceId:''
     },
     {
       id: 'starter',
@@ -38,6 +40,7 @@ export const tiers: Tier[] = [
       ],
       messageLimit: 100,
       productId: 'product_...', // Replace with your Starter tier Price ID
+      priceId:''
     },
     {
       id: 'pro',
@@ -52,5 +55,6 @@ export const tiers: Tier[] = [
       ],
       messageLimit: -1, // -1 represents unlimited
       productId: 'product_...', // Replace with your Pro tier Price ID
+      priceId:''
     },
 ];
