@@ -1,6 +1,4 @@
 // app/api/run/route.ts
-// Modify your existing run/route.ts file
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser, getTeamForUser } from '@/lib/db/queries';
 import { checkMessageLimit, incrementMessageCount, saveWorkflowHistory } from '@/lib/db/utils';
@@ -46,9 +44,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Increment the team's message count.
-    await incrementMessageCount(team.id, 1);
-
     // Validate required environment variables.
     if (!process.env.WORKFLOW_ID || !process.env.AITUTOR_API_KEY) {
       return NextResponse.json(
@@ -78,6 +73,9 @@ export async function POST(req: NextRequest) {
         { status: response.status }
       );
     }
+
+    // MOVED: Increment the team's message count AFTER successful API call
+    await incrementMessageCount(team.id, 1);
 
     // Save workflow history
     await saveWorkflowHistory(
