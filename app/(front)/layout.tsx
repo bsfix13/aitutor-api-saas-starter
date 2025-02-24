@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { use, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import { CircleIcon, Home, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
@@ -11,6 +12,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Logo } from '@/components/logo';
 import { useUser } from '@/lib/auth';
 import { signOut } from '@/app/(login)/actions';
 import { useRouter } from 'next/navigation';
@@ -31,16 +33,15 @@ function Header() {
     <header className="border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
-          <CircleIcon className="h-6 w-6 text-orange-500" />
-          <span className="ml-2 text-xl font-semibold text-gray-900">ACME</span>
+        <Image
+          src="/logo-long.png"
+          alt="Logo"
+          width={150}
+          height={40}
+          className="object-contain"
+        />
         </Link>
         <div className="flex items-center space-x-4">
-          <Link
-            href="/pricing"
-            className="text-sm font-medium text-gray-700 hover:text-gray-900"
-          >
-            Pricing
-          </Link>
           {user ? (
             <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <DropdownMenuTrigger>
@@ -72,12 +73,19 @@ function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
+            <>
             <Button
-              asChild
-              className="bg-black hover:bg-gray-800 text-white text-sm px-4 py-2 rounded-full"
-            >
-              <Link href="/sign-up">Sign Up</Link>
-            </Button>
+                asChild
+                className="bg-black hover:bg-gray-800 text-white text-sm px-4 py-2 rounded-full"
+              >
+                <Link href="/sign-up">Sign Up</Link>
+              </Button><Button
+                asChild
+                className="bg-black text-black hover:bg-gray-100 text-sm px-4 py-2 rounded-full border-2 bg-transparent"
+              >
+                  <Link href="/sign-in">Sign In</Link>
+                </Button>
+                </>
           )}
         </div>
       </div>
@@ -87,9 +95,9 @@ function Header() {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <section className="flex flex-col min-h-screen">
+    <main className="flex flex-col min-h-screen">
       <Header />
       {children}
-    </section>
+    </main>
   );
 }

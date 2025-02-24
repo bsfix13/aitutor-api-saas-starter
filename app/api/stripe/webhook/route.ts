@@ -1,6 +1,11 @@
+// /api/stripe/webhook/route.ts
 import Stripe from 'stripe';
 import { handleSubscriptionChange, stripe } from '@/lib/payments/stripe';
 import { NextRequest, NextResponse } from 'next/server';
+import { tiers } from '@/lib/tiers'; // Import tiers
+import { db } from '@/lib/db/drizzle';
+import { teams } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -24,7 +29,7 @@ export async function POST(request: NextRequest) {
     case 'customer.subscription.updated':
     case 'customer.subscription.deleted':
       const subscription = event.data.object as Stripe.Subscription;
-      await handleSubscriptionChange(subscription);
+      await handleSubscriptionChange(subscription); // Original Function
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);

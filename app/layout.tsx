@@ -4,9 +4,10 @@ import { Manrope } from 'next/font/google';
 import { UserProvider } from '@/lib/auth';
 import { getUser } from '@/lib/db/queries';
 
+
 export const metadata: Metadata = {
-  title: 'Next.js SaaS Starter',
-  description: 'Get started quickly with Next.js, Postgres, and Stripe.',
+  title: 'AI Tutor API SAAS Starter',
+  description: 'Get started quickly with AI Tutor API and full Stripe and Postgres',
 };
 
 export const viewport: Viewport = {

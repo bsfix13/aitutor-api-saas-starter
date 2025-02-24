@@ -1,3 +1,4 @@
+// lib/db/schema.ts
 import {
   pgTable,
   serial,
@@ -5,6 +6,7 @@ import {
   text,
   timestamp,
   integer,
+  pgEnum,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -29,6 +31,8 @@ export const teams = pgTable('teams', {
   stripeProductId: text('stripe_product_id'),
   planName: varchar('plan_name', { length: 50 }),
   subscriptionStatus: varchar('subscription_status', { length: 20 }),
+  messageLimit: integer('message_limit'), // Added message limit
+  currentMessages: integer('current_messages').default(0), // Added current message count
 });
 
 export const teamMembers = pgTable('team_members', {
@@ -68,15 +72,26 @@ export const invitations = pgTable('invitations', {
   status: varchar('status', { length: 20 }).notNull().default('pending'),
 });
 
+// Added messages table
+export const messages = pgTable('messages', {
+    id: serial('id').primaryKey(),
+    teamId: integer('team_id').notNull().references(() => teams.id),
+    userId: integer('user_id').notNull().references(() => users.id), // Keep track of which user sent the message
+    content: text('content').notNull(), // Assuming you want to store message content
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
   invitations: many(invitations),
+  messages: many(messages), // Relation to messages
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
   teamMembers: many(teamMembers),
   invitationsSent: many(invitations),
+  messages: many(messages), // Relation to messages
 }));
 
 export const invitationsRelations = relations(invitations, ({ one }) => ({
@@ -112,6 +127,18 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
   }),
 }));
 
+// Added messages relations
+export const messagesRelations = relations(messages, ({ one }) => ({
+    team: one(teams, {
+        fields: [messages.teamId],
+        references: [teams.id],
+    }),
+    user: one(users, {
+        fields: [messages.userId],
+        references: [users.id],
+    }),
+}));
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Team = typeof teams.$inferSelect;
@@ -122,6 +149,10 @@ export type ActivityLog = typeof activityLogs.$inferSelect;
 export type NewActivityLog = typeof activityLogs.$inferInsert;
 export type Invitation = typeof invitations.$inferSelect;
 export type NewInvitation = typeof invitations.$inferInsert;
+// Added Message types
+export type Message = typeof messages.$inferSelect;
+export type NewMessage = typeof messages.$inferInsert;
+
 export type TeamDataWithMembers = Team & {
   teamMembers: (TeamMember & {
     user: Pick<User, 'id' | 'name' | 'email'>;
@@ -140,3 +171,4 @@ export enum ActivityType {
   INVITE_TEAM_MEMBER = 'INVITE_TEAM_MEMBER',
   ACCEPT_INVITATION = 'ACCEPT_INVITATION',
 }
+
