@@ -63,6 +63,15 @@ The **AI Tutor API Subscription Starter** is your complete starting point to bui
 
    The app will then be accessible at [http://localhost:3000](http://localhost:3000).
 
+5. **Migrate and seed the database:**
+
+   ```bash
+   pnpm run db:generate
+   pnpm run db:migrate
+
+   ```
+
+
 ## Configuration & Setup
 
 ### Stripe Setup
